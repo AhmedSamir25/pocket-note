@@ -42,7 +42,7 @@
             </ul>
           </div>
           @else
-                    <a href="{{ route('register') }}" class="bg-blue-500 text-white p-2 rounded">Login</a>
+                    <a href="{{ route('login') }}" class="bg-blue-500 text-white p-2 rounded">Login</a>
             @endauth
         </div>
       </div>

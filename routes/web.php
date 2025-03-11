@@ -12,6 +12,11 @@ Route::get('/register', function () {
 
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 
+Route::get('/login', function () {
+    return view('auth.login');
+})->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+
 
 
 // Route::get('/notes', [NoteController::class, 'index']);
