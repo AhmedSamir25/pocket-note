@@ -11,7 +11,7 @@ class NoteController extends Controller
 {
     public function index()
     {
-        $notes = Note::where('user_id', Auth::id())->get();
+        $notes = Note::where('user_id', Auth::id())->orderBy('created_at', 'desc')->get();
         $tags = Tag::where('user_id', Auth::id())->get();
         return view('welcome', compact('notes', 'tags'));
     }
