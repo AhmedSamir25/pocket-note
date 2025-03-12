@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 
-class Tags extends Model
+class Tag extends Model
 {
     use HasFactory, Notifiable;
 
@@ -24,7 +24,7 @@ class Tags extends Model
     }
 
     public function notes()
-    {
-        return $this->belongsToMany(Note::class, 'note_tag');
-    }
+{
+    return $this->belongsToMany(Note::class);
+}
 }

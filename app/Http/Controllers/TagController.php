@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Tags;
+
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -9,13 +10,13 @@ class TagController extends Controller
 {
     public function index()
     {
-        $tags = Tags::where('user_id', Auth::id())->get();
+        $tags = Tag::where('user_id', Auth::id())->get();
         return view('welcome', compact('tags'));
     }
 
     public function show($id)
     {
-        return response()->json(Tags::findOrFail($id));
+        return response()->json(Tag::findOrFail($id));
     }
 
     public function store(Request $request)
@@ -24,26 +25,26 @@ class TagController extends Controller
             'name' => 'required|string|max:255',
         ]);
 
-        Tags::create([
+        Tag::create([
             'user_id' => Auth::id(),
-            'name' => $request->title,
+            'name' => $request->name,
         ]);
 
-        return response()->json(['message' => 'تمت إضافة الملاحظة بنجاح']);
+        return response()->json(['message' => 'تمت إضافة العلامة بنجاح']);
     }
 
     public function update(Request $request, $id)
     {
-        $tag = Tags::findOrFail($id);
+        $tag = Tag::findOrFail($id);
         $tag->update($request->all());
 
-        return response()->json(['message' => 'تم تحديث الملاحظة بنجاح']);
+        return response()->json(['message' => 'تم تحديث العلامة بنجاح']);
     }
 
     public function destroy($id)
     {
-        Tags::findOrFail($id)->delete();
+        Tag::findOrFail($id)->delete();
 
-        return response()->json(['message' => 'تم حذف الملاحظة']);
+        return response()->json(['message' => 'تم حذف العلامة']);
     }
 }

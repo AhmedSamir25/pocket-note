@@ -5,16 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Note;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use App\Models\Tags;
-
+use App\Models\Tag;
 
 class NoteController extends Controller
 {
     public function index()
     {
         $notes = Note::where('user_id', Auth::id())->get();
-        $tags = Tags::where('user_id', Auth::id())->get();
-        return view('welcome', compact('notes','tags'));
+        $tags = Tag::where('user_id', Auth::id())->get();
+        return view('welcome', compact('notes', 'tags'));
     }
 
     public function show($id)
@@ -23,32 +22,58 @@ class NoteController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-        ]);
+{
+    $request->validate([
+        'title' => 'required|string|max:255',
+        'content' => 'required|string',
+        'tag_id' => 'nullable|exists:tags,id',
+    ]);
 
-        Note::create([
-            'user_id' => Auth::id(),
-            'title' => $request->title,
-            'content' => $request->content,
-        ]);
+    // إنشاء الملاحظة
+    $note = Note::create([
+        'user_id' => Auth::id(),
+        'title' => $request->title,
+        'content' => $request->content,
+    ]);
 
-        return response()->json(['message' => 'تمت إضافة الملاحظة بنجاح']);
+    // ربط العلامة بالملاحظة إذا تم تحديدها
+    if ($request->tag_id) { // تغيير من has('tag_id') إلى التحقق المباشر
+        $note->tags()->attach($request->tag_id);
     }
 
-    public function update(Request $request, $id)
-    {
-        $note = Note::findOrFail($id);
-        $note->update($request->all());
+    return response()->json(['message' => 'تمت إضافة الملاحظة بنجاح']);
+}
 
-        return response()->json(['message' => 'تم تحديث الملاحظة بنجاح']);
+public function update(Request $request, $id)
+{
+    $request->validate([
+        'title' => 'required|string|max:255',
+        'content' => 'required|string',
+        'tag_id' => 'nullable|exists:tags,id',
+    ]);
+
+    // البحث عن الملاحظة وتحديثها
+    $note = Note::findOrFail($id);
+    $note->update([
+        'title' => $request->title,
+        'content' => $request->content,
+    ]);
+
+    // تحديث العلامة المرتبطة بالملاحظة
+    if ($request->tag_id) { // تغيير من has('tag_id') إلى التحقق المباشر
+        $note->tags()->sync([$request->tag_id]);
+    } else {
+        $note->tags()->detach();
     }
+
+    return response()->json(['message' => 'تم تحديث الملاحظة بنجاح']);
+}
 
     public function destroy($id)
     {
-        Note::findOrFail($id)->delete();
+        $note = Note::findOrFail($id);
+        $note->tags()->detach(); // إزالة جميع العلامات المرتبطة بالملاحظة
+        $note->delete(); // حذف الملاحظة
 
         return response()->json(['message' => 'تم حذف الملاحظة']);
     }
