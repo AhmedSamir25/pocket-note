@@ -1,38 +1,32 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Models\Note;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 use App\Models\Tags;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-
-class NoteController extends Controller
+class TagController extends Controller
 {
     public function index()
     {
-        $notes = Note::where('user_id', Auth::id())->get();
         $tags = Tags::where('user_id', Auth::id())->get();
-        return view('welcome', compact('notes','tags'));
+        return view('welcome', compact('tags'));
     }
 
     public function show($id)
     {
-        return response()->json(Note::findOrFail($id));
+        return response()->json(Tags::findOrFail($id));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
+            'name' => 'required|string|max:255',
         ]);
 
-        Note::create([
+        Tags::create([
             'user_id' => Auth::id(),
-            'title' => $request->title,
-            'content' => $request->content,
+            'name' => $request->title,
         ]);
 
         return response()->json(['message' => 'تمت إضافة الملاحظة بنجاح']);
@@ -40,15 +34,15 @@ class NoteController extends Controller
 
     public function update(Request $request, $id)
     {
-        $note = Note::findOrFail($id);
-        $note->update($request->all());
+        $tag = Tags::findOrFail($id);
+        $tag->update($request->all());
 
         return response()->json(['message' => 'تم تحديث الملاحظة بنجاح']);
     }
 
     public function destroy($id)
     {
-        Note::findOrFail($id)->delete();
+        Tags::findOrFail($id)->delete();
 
         return response()->json(['message' => 'تم حذف الملاحظة']);
     }

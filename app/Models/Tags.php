@@ -2,28 +2,29 @@
 
 namespace App\Models;
 
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 
-class Note extends Model
+class Tags extends Model
 {
     use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var list<string>
      */
-    protected $fillable = ['user_id', 'title', 'content'];
+    protected $fillable = ['user_id', 'name',];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function tags()
+    public function notes()
     {
-        return $this->belongsToMany(Tags::class, 'note_tag'); 
+        return $this->belongsToMany(Note::class, 'note_tag');
     }
 }

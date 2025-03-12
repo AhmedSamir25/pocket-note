@@ -46,7 +46,35 @@
             @endauth
         </div>
       </div>
-
+      {{-- Drawer --}}
+      <div class="drawer bg-white p-2">
+        <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+        <div class="drawer-content">
+          <!-- Page content here -->
+          <label for="my-drawer" class="btn btn-primary drawer-button w-15 h-5 bg-black">Open</label>
+        </div>
+        <div class="drawer-side">
+          <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+          <ul class="menu bg-base-200 text-base-content min-h-full w-80 p-4">
+            <!-- Sidebar content here -->
+            <div>
+                <div class="flex flex-row justify-between">
+                    <li><a>Tags</a></li>
+                    <li><a>+</a></li>
+                    </div>
+                    <ul class="mt-4">
+                        @foreach ($tags as $tag)
+                            <li class="p-3 bg-gray-200 rounded-lg my-2 cursor-pointer hover:bg-gray-300"
+                                @click="openDialog({{ $tag->id }}, '{{ $tag->tag_name }}',)">
+                                <strong class="text-black">{{ $tag->tag_name }}</strong>
+                            </li>
+                        @endforeach
+                    </ul>
+            </div>
+          </ul>
+        </div>
+      </div>
+        {{--  --}}
     <div class="max-w-5x2 h-screen mx-auto bg-white p-6 rounded-lg shadow-md">
 
         <input type="text" placeholder="Add New Note" 
